@@ -1,4 +1,4 @@
-# ReactPro-Challenge2
+# ReactPro-Challenge2 and Challenge3
 
 Created with [CodeSandbox](https://codesandbox.io/?from-app=1)
 
