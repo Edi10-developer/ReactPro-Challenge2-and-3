@@ -22,6 +22,14 @@ const Item = (props) => (
   </li>
 );
 
+const FilterInput = (props) => (
+  <input
+    data-testid="filter-todo"
+    onChange={props.handleFilterChange}
+    value={props.inputValue}
+  />
+);
+
 const List = (props) => (
   <ul data-testid="todo-list">
     {props.list.map((item) => (
@@ -49,6 +57,7 @@ class Form extends React.Component {
     this.setState({ inputValue: "" });
     this.props.handleSubmit(value);
   };
+
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
@@ -57,6 +66,7 @@ class Form extends React.Component {
           onChange={this.handleChange}
           value={this.state.inputValue}
         />
+        <br />
       </form>
     );
   }
@@ -65,6 +75,7 @@ class Form extends React.Component {
 class App extends React.Component {
   state = {
     list: [],
+    filteredList: [],
     value: ""
   };
 
@@ -88,21 +99,47 @@ class App extends React.Component {
     this.setState({ list: newList });
   };
 
+  // Challenge N.3
+  handleFilterChange = (e) => {
+    const filterdeList = this.state.list.filter((element) =>
+      element.value.includes(e.target.value)
+    );
+    if (filterdeList.length > 0) {
+      this.setState({ filteredList: filterdeList });
+    }
+  };
+
+  // Challenge N.2
   handleRemove = (item) => {
     const newList = this.state.list.filter((element) => element.id != item.id);
-    this.setState({ list: newList });
-    console.log(this.state.list);
+    const filteredNewList = this.state.filteredList.filter(
+      (element) => element.id != item.id
+    );
+    this.setState({ list: newList, filteredList: filteredNewList });
   };
 
   render() {
     return (
       <div className="App">
         <Form handleSubmit={this.handleSubmit} />
-        <List
-          list={this.state.list}
-          handleToggle={this.handleToggle}
-          handleRemove={this.handleRemove}
+
+        <FilterInput
+          handleFilterChange={this.handleFilterChange}
+          value={this.state.inputValue}
         />
+        {this.state.filteredList.length > 0 ? (
+          <List
+            list={this.state.filteredList}
+            handleToggle={this.handleToggle}
+            handleRemove={this.handleRemove}
+          />
+        ) : (
+          <List
+            list={this.state.list}
+            handleToggle={this.handleToggle}
+            handleRemove={this.handleRemove}
+          />
+        )}
       </div>
     );
   }
